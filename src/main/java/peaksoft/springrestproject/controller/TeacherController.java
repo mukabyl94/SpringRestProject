@@ -47,6 +47,7 @@ public class TeacherController {
     public TeacherResponse changeRole(@PathVariable("id")Long id, @RequestBody ChangeRoleRequest request){
         return teacherService.changeRole(id, request);
     }
+    @GetMapping
     public TeacherResponseView getAllTeachers(@RequestParam(name = "text", required = false)String text,
                                               @RequestParam int page,
                                               @RequestParam int size){
