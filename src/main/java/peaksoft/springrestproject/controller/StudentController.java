@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import peaksoft.springrestproject.dto.ChangeRoleRequest;
 import peaksoft.springrestproject.dto.StudentRequest;
 import peaksoft.springrestproject.dto.StudentResponse;
+import peaksoft.springrestproject.dto.StudentResponseView;
 import peaksoft.springrestproject.service.StudentService;
 
 import java.util.List;
@@ -49,5 +50,11 @@ public class StudentController {
     @PutMapping("change-rol/{id}")
     public StudentResponse changeRole(@PathVariable("id")Long id, @RequestBody ChangeRoleRequest request){
         return studentService.changeRole(id, request);
+    }
+    @GetMapping
+    public StudentResponseView getAllStudents(@RequestParam(name = "text", required = false)String text,
+                                                   @RequestParam int page,
+                                                   @RequestParam int size){
+        return studentService.searchAndPagination(text, page, size);
     }
 }

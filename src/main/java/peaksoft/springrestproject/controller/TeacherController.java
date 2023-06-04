@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import peaksoft.springrestproject.dto.ChangeRoleRequest;
-import peaksoft.springrestproject.dto.StudentResponse;
-import peaksoft.springrestproject.dto.TeacherRequest;
-import peaksoft.springrestproject.dto.TeacherResponse;
+import peaksoft.springrestproject.dto.*;
 import peaksoft.springrestproject.service.TeacherService;
 
 import java.util.List;
@@ -49,5 +46,10 @@ public class TeacherController {
     @PutMapping("change-rol/{id}")
     public TeacherResponse changeRole(@PathVariable("id")Long id, @RequestBody ChangeRoleRequest request){
         return teacherService.changeRole(id, request);
+    }
+    public TeacherResponseView getAllTeachers(@RequestParam(name = "text", required = false)String text,
+                                              @RequestParam int page,
+                                              @RequestParam int size){
+        return teacherService.searchAndPagination(text, page, size);
     }
 }

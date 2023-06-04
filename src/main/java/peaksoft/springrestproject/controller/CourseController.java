@@ -27,7 +27,7 @@ public class CourseController {
     @GetMapping("all")
     @Operation(summary = "Get all courses", description = "Only Admin get all Courses")
     public List<CourseResponse> getAll(){
-        return courseService.getAll();
+        return courseService.getAllCourses();
     }
     @GetMapping("{id}")
     @Operation(summary = "Get by id", description = "Admin can get Course by id")
@@ -45,9 +45,10 @@ public class CourseController {
         courseService.deleteCourse(id);
         return "Successfully deleted Course with id: "+id;
     }
-//    public CourseResponseView getAllCourses(@RequestParam(name = "text", required = false)String text,
-//                                            @RequestParam int page,
-//                                            @RequestParam int size){
-//        return courseService.se
-//    }
+    @GetMapping
+    public CourseResponseView getAllCourses(@RequestParam(name = "text", required = false)String text,
+                                            @RequestParam int page,
+                                            @RequestParam int size){
+        return courseService.searchAndPagination(text, page, size);
+    }
 }

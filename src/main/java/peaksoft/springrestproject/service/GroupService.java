@@ -1,9 +1,13 @@
 package peaksoft.springrestproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import peaksoft.springrestproject.dto.CourseResponse;
 import peaksoft.springrestproject.dto.GroupRequest;
 import peaksoft.springrestproject.dto.GroupResponse;
+import peaksoft.springrestproject.dto.GroupResponseView;
 import peaksoft.springrestproject.entity.Group;
 import peaksoft.springrestproject.repository.GroupRepository;
 
@@ -50,5 +54,22 @@ public class GroupService {
     }
     public void deleteGroup(Long groupId){
         groupRepository.deleteById(groupId);
+    }
+    public GroupResponseView searchAndPagination(String text, int page, int size){
+        Pageable pageable = PageRequest.of(page-1, size);
+        GroupResponseView groupResponseView = new GroupResponseView();
+        groupResponseView.setGroupResponses(view(search(text, pageable)));
+        return groupResponseView;
+    }
+    public List<GroupResponse> view(List<Group> groups){
+        List<GroupResponse> groupResponses = new ArrayList<>();
+        for (Group group : groups) {
+            groupResponses.add(mapToResponse(group));
+        }
+        return groupResponses;
+    }
+    public List<Group> search(String text, Pageable pageable){
+        String name = text == null?"": text;
+        return groupRepository.searchAndPagination(name.toUpperCase(), pageable);
     }
 }

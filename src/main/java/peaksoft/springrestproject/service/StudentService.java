@@ -1,11 +1,14 @@
 package peaksoft.springrestproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.springrestproject.dto.ChangeRoleRequest;
 import peaksoft.springrestproject.dto.StudentRequest;
 import peaksoft.springrestproject.dto.StudentResponse;
+import peaksoft.springrestproject.dto.StudentResponseView;
 import peaksoft.springrestproject.entity.Group;
 import peaksoft.springrestproject.entity.Role;
 import peaksoft.springrestproject.entity.StudyFormation;
@@ -81,5 +84,22 @@ public class StudentService {
         user.setRole(Role.valueOf(request.getRolName()));
         userRepository.save(user);
         return mapToResponse(user);
+    }
+    public StudentResponseView searchAndPagination(String text, int page, int size){
+        Pageable pageable = PageRequest.of(page-1, size);
+        StudentResponseView studentResponseView = new StudentResponseView();
+        studentResponseView.setStudentResponses(view(search(text, pageable)));
+        return studentResponseView;
+    }
+    public List<StudentResponse> view (List<User> users){
+        List<StudentResponse> studentResponses = new ArrayList<>();
+        for (User user : users) {
+            studentResponses.add(mapToResponse(user));
+        }
+        return studentResponses;
+    }
+    public List<User> search(String text, Pageable pageable){
+        String name= text == null?"": text;
+        return userRepository.searchAndPagination(name.toUpperCase(), pageable);
     }
 }

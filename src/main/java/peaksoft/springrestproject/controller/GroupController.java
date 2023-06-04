@@ -7,6 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.springrestproject.dto.GroupRequest;
 import peaksoft.springrestproject.dto.GroupResponse;
+import peaksoft.springrestproject.dto.GroupResponseView;
 import peaksoft.springrestproject.service.GroupService;
 
 import java.util.List;
@@ -44,5 +45,11 @@ public class GroupController {
     public String delete(@PathVariable("id")Long id){
         groupService.deleteGroup(id);
         return "Successfully deleted Group with id: "+id;
+    }
+    @GetMapping
+    public GroupResponseView getAllGroups(@RequestParam(name = "text", required = false)String text,
+                                          @RequestParam int page,
+                                          @RequestParam int size){
+        return groupService.searchAndPagination(text, page, size);
     }
 }

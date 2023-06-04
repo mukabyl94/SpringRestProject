@@ -1,9 +1,12 @@
 package peaksoft.springrestproject.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import peaksoft.springrestproject.dto.CourseRequest;
 import peaksoft.springrestproject.dto.CourseResponse;
+import peaksoft.springrestproject.dto.CourseResponseView;
 import peaksoft.springrestproject.entity.Company;
 import peaksoft.springrestproject.entity.Course;
 import peaksoft.springrestproject.repository.CompanyRepository;
@@ -41,7 +44,7 @@ public class CourseService {
         courseResponse.setIsDelete(course.getIsDeleted());
         return courseResponse;
     }
-    public List<CourseResponse> getAll(){
+    public List<CourseResponse> getAllCourses(){
         List<CourseResponse> courseResponses = new ArrayList<>();
         for (Course course : courseRepository.findAll()) {
             courseResponses.add(mapToResponse(course));
@@ -63,5 +66,22 @@ public class CourseService {
     }
     public void deleteCourse(Long courseId){
         courseRepository.deleteById(courseId);
+    }
+    public CourseResponseView searchAndPagination(String text, int page, int size){
+        Pageable pageable = PageRequest.of(page-1, size);
+        CourseResponseView courseResponseView = new CourseResponseView();
+        courseResponseView.setCourseResponses(view(search(text, pageable)));
+        return courseResponseView;
+    }
+    public List<CourseResponse> view(List<Course> courses){
+        List<CourseResponse> courseResponses = new ArrayList<>();
+        for (Course course : courses) {
+            courseResponses.add(mapToResponse(course));
+        }
+        return courseResponses;
+    }
+    public List<Course> search (String text, Pageable pageable){
+        String name = text == null?"": text;
+        return courseRepository.searchAndPagination(name.toUpperCase(), pageable);
     }
 }
