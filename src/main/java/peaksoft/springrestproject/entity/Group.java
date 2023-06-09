@@ -1,5 +1,7 @@
 package peaksoft.springrestproject.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +23,6 @@ public class Group {
     private String dateOfStart;
     private String dateOfFinish;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
-    private List<User> student;
+    @JsonIgnore
+    private List<User> students;
 }

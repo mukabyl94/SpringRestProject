@@ -1,8 +1,10 @@
 package peaksoft.springrestproject.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.springrestproject.dto.*;
 import peaksoft.springrestproject.entity.Course;
@@ -14,17 +16,20 @@ import peaksoft.springrestproject.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TeacherService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     public TeacherResponse create(TeacherRequest request){
         User user = new User();
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
         user.setRole(Role.INSTRUCTOR);
         Course course = courseRepository.findById(request.getCourseId()).get();
         user.setCourse(course);
@@ -32,14 +37,14 @@ public class TeacherService {
         return mapToResponse(user);
     }
     public TeacherResponse mapToResponse(User user){
-        TeacherResponse teacherResponse = new TeacherResponse();
-        teacherResponse.setFirstName(user.getFirstName());
-        teacherResponse.setLastName(user.getLastName());
-        teacherResponse.setEmail(user.getEmail());
-        teacherResponse.setPassword(user.getPassword());
-        teacherResponse.setRoleName(user.getRole().name());
-        teacherResponse.setCourse(user.getCourse());
-        return teacherResponse;
+        return TeacherResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .roleName(user.getRole().name())
+                .course(user.getCourse()).build();
     }
     public List<TeacherResponse> getAll(){
         List<TeacherResponse> teacherResponses = new ArrayList<>();
@@ -57,7 +62,7 @@ public class TeacherService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
         Course course = courseRepository.findById(request.getCourseId()).get();
         user.setCourse(course);
         userRepository.save(user);

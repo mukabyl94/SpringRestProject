@@ -1,11 +1,13 @@
 package peaksoft.springrestproject.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import peaksoft.springrestproject.entity.Group;
 
 @Getter
 @Setter
+@Builder
 public class StudentResponse {
     private String firstName;
     private String lastName;

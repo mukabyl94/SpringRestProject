@@ -40,14 +40,14 @@ public class StudentService {
         return mapToResponse(user);
     }
     public StudentResponse mapToResponse(User user){
-        StudentResponse studentResponse = new StudentResponse();
-        studentResponse.setFirstName(user.getFirstName());
-        studentResponse.setLastName(user.getLastName());
-        studentResponse.setEmail(user.getEmail());
-        studentResponse.setPassword(user.getPassword());
-        studentResponse.setRoleName(user.getRole().name());
-        studentResponse.setGroup(user.getGroup());
-        return studentResponse;
+        return StudentResponse.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .roleName(user.getRole().name())
+                .studyFormationName(user.getStudyFormation().name())
+                .group(user.getGroup()).build();
     }
     public List<StudentResponse> getAll(){
         List<StudentResponse> studentResponses = new ArrayList<>();
